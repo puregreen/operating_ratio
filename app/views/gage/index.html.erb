@@ -1,0 +1,175 @@
+<!--月遷移-->
+<div class="contextual">
+	<a id="applyOperatingRatioDownMonth" href="javascript:void(0)" class="icon icon-arrow-left" title="1 <%= t :months_ago %>">&#8203;</a>
+	<a id="applyOperatingRatioThisMonth" href="javascript:void(0)" class="icon icon-calendar" title="<%= t :jump_this_month %>">&#8203;</a>
+	<a id="applyOperatingRatioUpMonth" href="javascript:void(0)" class="icon icon-arrow-right" title="1 <%= t :months_later %>">&#8203;</a>
+</div>
+
+<!--タイトル-->
+<h2>
+	<%= @user[:textMonth] %><%= t :is_operate %>
+	<b id="bsubtitle" class="bsubtitle">（<%= t :estimated %>）</b>
+</h2>		
+
+<%= stylesheet_link_tag 'gage', :plugin => 'operating_ratio', :media => 'all' %>
+<%= javascript_include_tag 'gage', :plugin => 'operating_ratio', :media => 'all' %>
+<%= javascript_include_tag 'justgage', :plugin => 'operating_ratio', :media => 'all' %>
+<%= javascript_include_tag 'raphael', :plugin => 'operating_ratio', :media => 'all' %>
+
+<!--インプット-->
+<div id="input">
+	<b class="gage-menu-button button button-2 icon icon-projects">
+	1<%= t :person_day %>＝<%= @user[:flagHour] %>ｈ<!--1人日-->
+	</b>
+	<!--予定-->
+	<a class="gage-menu-button button button-2 icon icon-fav" url="javascript:void(0)" id="button_estimated" href="javascript:void(0)"><%= t :button_estimated %></a>
+	<!--実績-->
+	<a class="gage-menu-button button button-2 icon icon-fav-off" url="javascript:void(0)" id="button_spent" href="javascript:void(0)"><%= t :button_spent %></a>
+	<br>
+	<br>
+	<form id="query_form">
+		<div id="query_form_content">
+			<fieldset id="filters" class="collapsible">
+				<legend onclick="gageFilters();"><%= t :button_filter %></legend><!--フィルタ-->
+				<br>
+				<div id="gage-filter-box" style="">
+					<select id="m" name="m" class="m">
+						<option value="<%= @user[:flagMonth] %>" <%= @user[:flm_selected_d] %> >-</option>
+						<option value="0" <%= @user[:flm_selected_0] %> ><%= t :last_month %></option><!--先月-->
+						<option value="1" <%= @user[:flm_selected_1] %> ><%= t :this_month %></option><!--今月-->
+						<option value="2" <%= @user[:flm_selected_2] %> ><%= t :next_month %></option><!--来月-->
+					</select>
+					<br>
+					1人日＝
+					<select id="h" name="h" class="h">
+						<option value="<%= @user[:flagHour] %>" <%= @user[:flh_selected_d] %> >-</option>
+						<option value="6" <%= @user[:flh_selected_6] %> >6</option>
+						<option value="7" <%= @user[:flh_selected_7] %> >7</option>
+						<option value="8" <%= @user[:flh_selected_8] %> >8</option>
+					</select>
+					ｈ
+				</div>
+			</fieldset>
+			<p class="buttons">
+				<a id="applyOperatingRatioQuery" href="javascript:void(0)" class="icon icon-checked"><%= t :button_apply %></a><!--適用-->
+			</p>
+		</div>
+	</form>
+	<hr>
+	<br>
+</div>
+
+<!--アウトプット-->
+<div id="output">
+	<div>
+		<div id="gauge" class="boxContainer">
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+//初回読み込み時
+  gauge_output("estimated_hours"); 
+  
+//フィルタ適用クリック
+  $('#applyOperatingRatioQuery').on('click',function(){
+     var OperatingRatio_m = $('#query_form [name=m]').val();
+     var OperatingRatio_h = $('#query_form [name=h]').val();
+	 window.location.href = '<%= @user[:path] %>gage/' + OperatingRatio_m + '/' + OperatingRatio_h;
+  });
+
+//前の月クリック
+  $('#applyOperatingRatioDownMonth').on('click',function(){
+     var OperatingRatio_m = <%= @user[:flagMonth] %>-1;
+     var OperatingRatio_h = <%= @user[:flagHour] %>;
+	 window.location.href = '<%= @user[:path] %>gage/' + OperatingRatio_m + '/' + OperatingRatio_h;
+  });
+
+//今月クリック
+  $('#applyOperatingRatioThisMonth').on('click',function(){
+     var OperatingRatio_m = 1;
+     var OperatingRatio_h = <%= @user[:flagHour] %>;
+	 window.location.href = '<%= @user[:path] %>gage/' + OperatingRatio_m + '/' + OperatingRatio_h;
+  });
+
+//次の月クリック
+  $('#applyOperatingRatioUpMonth').on('click',function(){
+     var OperatingRatio_m = <%= @user[:flagMonth] %>+1;
+     var OperatingRatio_h = <%= @user[:flagHour] %>;
+	 window.location.href = '<%= @user[:path] %>gage/' + OperatingRatio_m + '/' + OperatingRatio_h;
+  });
+  
+//予定工数クリック
+  $('#button_estimated').on('click',function(){
+	$('#button_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_estimated').addClass('icon-fav');
+	$('#button_spent').addClass('icon-fav-off');
+	$('#bsubtitle').text('（<%= t :estimated %>）');
+	gauge_output("estimated_hours");
+  });
+  
+//実績作業時間クリック
+  $('#button_spent').on('click',function(){
+	$('#button_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_estimated').addClass('icon-fav-off');
+	$('#button_spent').addClass('icon-fav');
+	$('#bsubtitle').text('（<%= t :spent %>）');
+	gauge_output("spent_hours");
+  });  
+  
+//フィルタークリック
+  function gageFilters(){
+	var disp = $('#gage-filter-box').css('display'); 
+	if(disp == 'block'){
+		$('#gage-filter-box').css('display', 'none');
+		$('#filters').addClass('collapsed');
+	} else {
+		$('#gage-filter-box').css('display', 'block');
+		$('#filters').removeClass('collapsed');
+	}
+  }  
+  
+//稼働率ゲージ出力
+  function gauge_output(set_hour) {
+    if (!set_hour) {
+        set_hour = 'estimated_hours';
+    }
+	$('#gauge').html('');
+	try{//データ取得
+		$.getJSON("<%= @user[:path] %>gage/data.json/<%= @user[:flagMonth] %>", function(data) {
+			var list = data.groupBy(["assignee"],[set_hour]);
+			var count = 0;
+			if(Object.keys(list).length > 0){
+				Object.keys(list).forEach(function(key) {
+					if(list[key]["assignee"]){
+						var div = $('<div id="' + key + '" class="pbox"></div>');
+						$("#gauge").append(div);
+						new JustGage({
+							id: key,
+							value: Number(list[key][set_hour])/(<%= @user[:flagHour] %>*20)*100,
+							min: 0,
+							max: 100,
+							title: list[key]["assignee"]+"("+list[key][set_hour]+")h",
+							label: "％"
+						});
+						count++;
+					};
+				});
+				if(count==0){//アサインされたデータがない場合
+					$('#gauge').html('<%= t :no_assign %>');
+				};
+			}else{//データがない場合
+				$('#gauge').html('<%= t :no_data %>');
+			};
+		});
+	}catch(e){//データ取得失敗時
+		$('#gauge').html('<%= t :data_failed %>');
+		console.log(e);
+	}finally{
+		console.log("OK");
+	}
+  }
+
+</script>

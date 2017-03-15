@@ -1,0 +1,16 @@
+= operating_ratio
+
+---------------------------------------
+*  [source](https://github.com/puregreen/operating_ratio "ソースファイル")  
+*  [author_url](https://twitter.com/nuunlathemungh2/ "制作者のURL")  
+*  [author_url](https://t.co/JQmRVhMmZ7 "制作者のURL")  
+   
+== License  
+---------------------------------------
+* Copyright &copy; 2017 Pure Green.  
+* Dual licensed under the [MIT license][MIT] and [GPL license][GPL].  
+
+* [MIT]: http://www.opensource.org/licenses/mit-license.php  
+* [GPL]: http://www.gnu.org/licenses/gpl.html  
+
+* Author Pure Green.

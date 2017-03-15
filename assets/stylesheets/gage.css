@@ -1,0 +1,62 @@
+.h {
+	width: 40px;
+}
+
+.m {
+	width: 100px;
+}
+
+.bsubtitle {
+	font-size: x-small;
+}
+
+.pbox {
+	float: left;
+}
+
+.boxContainer {
+	overflow: hidden;
+}
+
+.gage-menu-button {
+    display: inline-block;
+    border-radius: 2px;
+    border: 1px solid #e4e4e4;
+    padding: 8px 16px;
+}
+
+.icon-calendar {
+    background-image: url('../../../images/calendar.png');
+}
+
+.icon-arrow-left {
+    background-image: url('../../../images/bullet_arrow_left.png');
+}
+
+.icon-arrow-right {
+    background-image: url('../../../images/bullet_arrow_right.png');
+}
+
+.icon-green-arrow-left {
+    background-image: url('../images/arrow_left.gif');
+}
+
+.icon-green-arrow-right {
+    background-image: url('../images/arrow_right.gif');
+}
+
+/* clearfix */
+.boxContainer:before,
+.boxContainer:after {
+    content: "";
+    display: table;
+}
+ 
+.boxContainer:after {
+    clear: both;
+}
+ 
+/* For IE 6/7 (trigger hasLayout) */
+.boxContainer {
+    zoom: 1;
+}
