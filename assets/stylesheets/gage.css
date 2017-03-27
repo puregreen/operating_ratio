@@ -60,3 +60,16 @@
 .boxContainer {
     zoom: 1;
 }
+
+#csvdata {
+	position : relative;
+	width: 300px;
+	height: 150px;
+}
+
+#csvdownload {
+	width: 300px;
+	text-align: center;
+	bottom: 10px;
+	position : absolute;
+}
