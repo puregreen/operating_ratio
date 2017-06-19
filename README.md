@@ -1,7 +1,11 @@
 # operating_ratio
 This is a Operating Ratio Plugin for Redmine.  
 稼働率をゲージで表示するためのRedmine用のプラグインです。  
-  
+
+20170619
+Supported projects across aggregation.
+プロジェクト横断集計に対応しました。
+
 ![Alt text](./GAGE_SP.PNG)
 Display in the gauge.  
 該当月の予定（予定工数）と実績（作業時間）を切り替えて表示できます。  
