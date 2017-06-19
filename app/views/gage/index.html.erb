@@ -25,6 +25,12 @@
 	<a class="gage-menu-button button button-2 icon icon-fav" url="javascript:void(0)" id="button_estimated" href="javascript:void(0)"><%= t :button_estimated %></a>
 	<!--実績-->
 	<a class="gage-menu-button button button-2 icon icon-fav-off" url="javascript:void(0)" id="button_spent" href="javascript:void(0)"><%= t :button_spent %></a>
+
+	<!--全プロジェクト横断予定-->
+	<a class="gage-menu-button button button-2 icon icon-fav-off" url="javascript:void(0)" id="button_all_estimated" href="javascript:void(0)"><%= t :button_all_estimated %></a>
+	<!--全プロジェクト横断実績-->
+	<a class="gage-menu-button button button-2 icon icon-fav-off" url="javascript:void(0)" id="button_all_spent" href="javascript:void(0)"><%= t :button_all_spent %></a>
+	
 	<br>
 	<br>
 	<form id="query_form">
@@ -40,7 +46,7 @@
 						<option value="2" <%= @user[:flm_selected_2] %> ><%= t :next_month %></option><!--来月-->
 					</select>
 					<br>
-					1人日＝
+					1<%= t :person_day %>＝
 					<select id="h" name="h" class="h">
 						<option value="<%= @user[:flagHour] %>" <%= @user[:flh_selected_d] %> >-</option>
 						<option value="6" <%= @user[:flh_selected_6] %> >6</option>
@@ -104,8 +110,12 @@
   $('#button_estimated').on('click',function(){
 	$('#button_estimated').removeClass('icon-fav-off icon-fav');
 	$('#button_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_all_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_all_spent').removeClass('icon-fav-off icon-fav');
 	$('#button_estimated').addClass('icon-fav');
 	$('#button_spent').addClass('icon-fav-off');
+	$('#button_all_estimated').addClass('icon-fav-off');
+	$('#button_all_spent').addClass('icon-fav-off');
 	$('#bsubtitle').text('（<%= t :estimated %>）');
 	gauge_output("estimated_hours");
   });
@@ -114,11 +124,43 @@
   $('#button_spent').on('click',function(){
 	$('#button_estimated').removeClass('icon-fav-off icon-fav');
 	$('#button_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_all_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_all_spent').removeClass('icon-fav-off icon-fav');
 	$('#button_estimated').addClass('icon-fav-off');
 	$('#button_spent').addClass('icon-fav');
+	$('#button_all_estimated').addClass('icon-fav-off');
+	$('#button_all_spent').addClass('icon-fav-off');
 	$('#bsubtitle').text('（<%= t :spent %>）');
 	gauge_output("spent_hours");
-  });  
+  }); 
+  
+//全プロジェクト横断予定工数クリック
+  $('#button_all_estimated').on('click',function(){
+	$('#button_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_all_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_all_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_estimated').addClass('icon-fav-off');
+	$('#button_spent').addClass('icon-fav-off');
+	$('#button_all_estimated').addClass('icon-fav');
+	$('#button_all_spent').addClass('icon-fav-off');
+	$('#bsubtitle').text('（<%= t :all_estimated %>）');
+	gauge_output("estimated_hours","all");
+  });
+  
+//全プロジェクト横断実績作業時間クリック
+  $('#button_all_spent').on('click',function(){
+	$('#button_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_all_estimated').removeClass('icon-fav-off icon-fav');
+	$('#button_all_spent').removeClass('icon-fav-off icon-fav');
+	$('#button_estimated').addClass('icon-fav-off');
+	$('#button_spent').addClass('icon-fav-off');
+	$('#button_all_estimated').addClass('icon-fav-off');
+	$('#button_all_spent').addClass('icon-fav');
+	$('#bsubtitle').text('（<%= t :all_spent %>）');
+	gauge_output("spent_hours","all");
+  }); 
   
 //フィルタークリック
   function gageFilters(){
@@ -133,14 +175,17 @@
   }  
   
 //稼働率ゲージ出力
-  function gauge_output(set_hour) {
+  function gauge_output(set_hour,set_data) {
     if (!set_hour) {
         set_hour = 'estimated_hours';
+    }
+    if (!set_data) {
+        set_data = 'data';
     }
 	$('#gauge').html('');
 	try{//データ取得
 		csv_output = "assignee," + set_hour + ",ratio" + '\r\n';
-		$.getJSON("<%= @user[:path] %>gage/data.json/<%= @user[:flagMonth] %>", function(data) {
+		$.getJSON("<%= @user[:path] %>gage/" + set_data + ".json/<%= @user[:flagMonth] %>", function(data) {
 			var list = data.groupBy(["assignee"],[set_hour]);
 			var count = 0;
 			if(Object.keys(list).length > 0){

@@ -103,6 +103,23 @@ class GageController < ApplicationController
     issues = convert2issues(Issue.where(project_id: "#{@project.id}").where(start_date: from...to))
     render json: issues
   end
+  
+   # チケットのjsonデータ月絞込(プロジェクト横断集計)
+  def all
+	if params[:flagMonth].blank? 
+		flm = 0
+	else
+		flm = params[:flagMonth].to_i 
+	end
+	
+	flm = flm - 1
+	
+    from = Time.now.at_beginning_of_month + flm.month
+    to   = from + 1.month
+
+    issues = convert2issues(Issue.where(start_date: from...to))
+    render json: issues
+  end
 
   private
 

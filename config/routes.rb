@@ -9,5 +9,8 @@ Rails.application.routes.draw do
     get 'gage/data' 				=> 'gage#data'
     get 'gage/data/:flagMonth' 		=> 'gage#data'
     get 'gage/data.json/:flagMonth' => 'gage#data'
+    get 'gage/all' 					=> 'gage#all'
+    get 'gage/all/:flagMonth' 		=> 'gage#all'
+    get 'gage/all.json/:flagMonth'  => 'gage#all'
   end
 end
