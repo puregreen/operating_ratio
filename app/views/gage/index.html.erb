@@ -76,7 +76,7 @@
 <script type="text/javascript">
 //初回読み込み時
   var csv_output = "";
-  gauge_output("estimated_hours"); 
+  //gauge_output("estimated_hours"); 
   
 //フィルタ適用クリック
   $('#applyOperatingRatioQuery').on('click',function(){
@@ -260,4 +260,26 @@
     }
   }
 
+  // URLアンカー取得
+  var urlHash = location.hash;
+  if(urlHash){
+  // アンカー#all_estimated
+	switch (urlHash){
+		case '#spent':
+			$('#button_spent').click();
+			break;
+		case '#all_estimated':
+			$('#button_all_estimated').click();
+			break;
+		case '#all_spent':
+			$('#button_all_spent').click();
+			break;
+		default:
+			gauge_output("estimated_hours"); 
+			break;
+	}
+  }else{
+	gauge_output("estimated_hours"); 
+  }
+  
 </script>
